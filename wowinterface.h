@@ -9,7 +9,7 @@ class WoWInterface
 {
 public:
     WoWInterface();
-    void readLUA(QString fileName);
+    void readCensus(QString fileName);
 };
 
 #endif // WOWINTERFACE_H

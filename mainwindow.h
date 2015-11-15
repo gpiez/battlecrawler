@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 class QNetworkReply;
+class CensusDatabase;
 
 namespace Ui {
 class MainWindow;
@@ -16,16 +17,13 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void requestShowPage();
-
-public slots:
-    void requestReceived(QNetworkReply *reply);
 
 private slots:
-    void on_pushButton_clicked();
+    void on_pushButtonCensus_clicked();
 
 private:
     Ui::MainWindow *ui;
+    CensusDatabase* db;
 };
 
 #endif // MAINWINDOW_H
