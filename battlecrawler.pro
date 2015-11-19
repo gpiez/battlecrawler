@@ -19,8 +19,7 @@ SOURCES += main.cpp\
     player.cpp \
     guild.cpp \
     armoryguild.cpp \
-    armoryplayer.cpp \
-    playerview.cpp
+    armoryplayer.cpp
 
 HEADERS  += mainwindow.h \
     censusdatabase.h \
@@ -28,7 +27,6 @@ HEADERS  += mainwindow.h \
     player.h \
     guild.h \
     armoryguild.h \
-    armoryplayer.h \
-    playerview.h
+    armoryplayer.h
 
 FORMS    += mainwindow.ui
