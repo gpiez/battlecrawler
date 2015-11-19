@@ -12,6 +12,7 @@ public:
     ArmoryGuild();
     void processAnswer(QString);
     void processError(QString);
+
 };
 
 #endif // ARMORYGUILD_H

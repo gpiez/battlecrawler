@@ -19,15 +19,16 @@ SOURCES += main.cpp\
     player.cpp \
     guild.cpp \
     armoryguild.cpp \
-    armoryplayer.cpp
+    armoryplayer.cpp \
+    playerview.cpp
 
 HEADERS  += mainwindow.h \
-    wowinterface.h \
     censusdatabase.h \
     armory.h \
     player.h \
     guild.h \
     armoryguild.h \
-    armoryplayer.h
+    armoryplayer.h \
+    playerview.h
 
 FORMS    += mainwindow.ui

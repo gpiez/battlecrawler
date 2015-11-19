@@ -6,12 +6,9 @@
 #include <QFile>
 #include <QSettings>
 
-CensusDatabase::CensusDatabase(QString fileName):
-    level(0)
+void CensusDatabase::update(QString fileName)
 {
-    QSettings settings("piesoft","battlecrawler");
-    apikey=settings.value("apikey").toString();
-
+    level = 0;
     QFile f(fileName);
     f.open(QIODevice::ReadOnly);
     QString s = f.readAll();
@@ -19,9 +16,18 @@ CensusDatabase::CensusDatabase(QString fileName):
     parseServers(s, p);
 }
 
+CensusDatabase::CensusDatabase(MainWindow* ui):
+    ui(ui)
+{
+    QSettings settings("piesoft","battlecrawler");
+    apikey=settings.value("apikey").toString();
+    this->ui = ui;
+    Armory::setui(ui);
+}
+
 int CensusDatabase::nPlayers()
 {
-    return players.size();
+    return Player::players.size();
 }
 
 QString parseNext(QString s, int& start) {
@@ -66,7 +72,7 @@ Node CensusDatabase::parseServers(QString s, int& p) {
             key = token.mid(2, token.length()-4);
             switch (level) {
             case 2:
-                currentPlayer.server = key.mid(key.indexOf('-')+1);
+                currentPlayer.realm = key.mid(key.indexOf('-')+1);
                 break;
             case 3:
                 currentPlayer.faction = key;
@@ -87,11 +93,9 @@ Node CensusDatabase::parseServers(QString s, int& p) {
             if (level == 6) {
                 Node node = parseServers(s, p);
                 currentPlayer.level = node["0"].toInt();
-                currentPlayer.guild = node["1"].toString();
-                currentPlayer.guild.remove('"');
 // ?? seen on server ??  currentPlayer.server = node["2"];
-                currentPlayer.lastSeen = node["3"].toString();
-                players.append(currentPlayer);
+                currentPlayer.toBeUpdated = true;
+                currentPlayer.insert();
             } else
                 parseServers(s, p);
         } else {
@@ -107,23 +111,30 @@ Node CensusDatabase::parseServers(QString s, int& p) {
 }
 
 void CensusDatabase::createGuilds() {
-    for(const Player p: players) {
+    for(const Player p: Player::players) {
         QString g = p.guild;
         if (g.isEmpty()) {
             g = "noguild";
         }
-        QString key = g + "-" + p.server;
-        guilds[key].name = g;
-        guilds[key].faction = p.faction;
-        guilds[key].server = p.server;
-        guilds[key].members.append(p.name);
+        QString key = g + "-" + p.realm;
+        if (Guild::guildLongNameIndex.find(key) == Guild::guildLongNameIndex.end()) {
+            int i = Guild::guilds.size();
+            Guild::guildLongNameIndex[key] = i;
+            Guild::guildNameIndex[g] = i;
+            Guild::guilds.append(Guild());
+            Guild::guilds[i].name = g;
+            Guild::guilds[i].faction = p.faction;
+            Guild::guilds[i].realm = p.realm;
+        }
+//        Guild::guilds[i].members.append(p.name);
     }
 }
 
 void CensusDatabase::updateGuilds() {
-    for (Guild g: guilds) {
+    for (Guild g: Guild::guilds) {
+        if (g.name == "noguild") continue;
         QString req("https://eu.api.battle.net/wow/guild/");
-        req += g.server;
+        req += g.realm;
         req += "/";
         req += g.name;
         req += "?fields=members&locale=de_DE&apikey=";
@@ -132,15 +143,23 @@ void CensusDatabase::updateGuilds() {
     }
 }
 
-void CensusDatabase::saveGuilds()
-{
-    QFile file("battlecrawler.dat");
-    file.open(QIODevice::WriteOnly);
-    QDataStream out(&file);
-    out << guilds;
+void CensusDatabase::updatePlayers() {
+    int i=0;
+    for (Player p: Player::players) {
+        i++;
+        if (i>100) break;
+        QString req("https://eu.api.battle.net/wow/character/");
+        req += p.realm;
+        req += "/";
+        req += p.name;
+        req += "?fields=guild+achievements+items+progression&locale=de_DE&apikey=";
+        req += apikey;
+        ap.request(QUrl(req));
+    }
 }
+
 
 int CensusDatabase::nGuilds()
 {
-    return guilds.size();
+    return Guild::guilds.size();
 }

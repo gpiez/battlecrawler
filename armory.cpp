@@ -1,20 +1,31 @@
 #include "armory.h"
 
-Armory::Armory()
-{
+#include <QThread>
+#include <QEventLoop>
+#include <QTimer>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
-}
+MainWindow* Armory::ui;
 
 void Armory::request(QUrl url){
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    connect(manager,SIGNAL(finished(QNetworkReply*)),this,SLOT(requestReceived(QNetworkReply*)));
-    qDebug() << url.toString();
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(requestReceived(QNetworkReply*)));
+//    qDebug() << url.toString();
     QNetworkReply* reply = manager->get(QNetworkRequest(url));
+    QEventLoop loop;
+    QTimer::singleShot(100, &loop, SLOT(quit()));
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
+}
+
+void Armory::setui(MainWindow *ui)
+{
+    Armory::ui = ui;
 }
 
 void Armory::requestReceived(QNetworkReply *reply)
 {
-    qDebug() << "reply";
     reply->deleteLater();
 
     if(reply->error() == QNetworkReply::NoError) {

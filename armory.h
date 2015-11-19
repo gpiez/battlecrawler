@@ -4,15 +4,17 @@
 #include "guild.h"
 #include "player.h"
 
-#include <QNetworkReply>
+#include <QUrl>
+
+class MainWindow;
+class QNetworkReply;
 
 class Armory: public QObject
 {
     Q_OBJECT
 public:
-    Armory();
     void request(QUrl);
-
+    static void setui(MainWindow* ui);
 protected:
     static qint64 requestsPending;
     static qint64 currentRequest;
@@ -21,6 +23,8 @@ protected:
     static qint64 quota1request;
     static QDateTime quota2Time;
     static qint64 quota2request;
+
+    static MainWindow* ui;
 
     virtual void processAnswer(QString) = 0;
     virtual void processError(QString) = 0;

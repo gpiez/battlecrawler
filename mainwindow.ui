@@ -16,7 +16,13 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QTextEdit" name="txt_debug"/>
+     <widget class="QTreeWidget" name="treeWidget">
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
+     </widget>
     </item>
     <item>
      <widget class="QWidget" name="verticalWidget" native="true">
@@ -31,6 +37,20 @@
         <widget class="QPushButton" name="pushButtonCensus">
          <property name="text">
           <string>Read Census</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonPlayers">
+         <property name="text">
+          <string>Update Players</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonGuilds">
+         <property name="text">
+          <string>Update Guilds</string>
          </property>
         </widget>
        </item>
@@ -71,7 +91,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>29</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>
