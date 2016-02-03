@@ -8,11 +8,24 @@
 
 MainWindow* Armory::ui;
 
+qint64 Armory::requestsPending;
+
+QVector<Character> Armory::characters;
+QHash<QString, int> Armory::characterNameIndex;
+QHash<QString, int> Armory::characterLongNameIndex;
+QVector<Guild> Armory::guilds;
+QHash<QString, int> Armory::guildNameIndex;
+QHash<QString, int> Armory::guildLongNameIndex;
+
 void Armory::request(QUrl url){
+    requestsPending++;
+//    qDebug() << "request: " << url.toString();
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(requestReceived(QNetworkReply*)));
 //    qDebug() << url.toString();
-    QNetworkReply* reply = manager->get(QNetworkRequest(url));
+    QNetworkRequest request(url);
+//    request.setRawHeader("Accept-Encoding", "gzip,deflate");
+    QNetworkReply* reply = manager->get(request);
     QEventLoop loop;
     QTimer::singleShot(100, &loop, SLOT(quit()));
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -22,6 +35,11 @@ void Armory::request(QUrl url){
 void Armory::setui(MainWindow *ui)
 {
     Armory::ui = ui;
+}
+
+bool Armory::getRequestsPending()
+{
+    return !!requestsPending;
 }
 
 void Armory::requestReceived(QNetworkReply *reply)
@@ -36,6 +54,8 @@ void Armory::requestReceived(QNetworkReply *reply)
              // Here we got the final reply
             QString replyText = reply->readAll();
             processAnswer(replyText);
+//            qDebug() << "reply: " << replyText;
+            requestsPending--;
         }
         else if (v >= 300 && v < 400) // Redirection
         {
@@ -56,7 +76,11 @@ void Armory::requestReceived(QNetworkReply *reply)
     {
         // Error
         processError(reply->errorString());
+//       qDebug() << "reply: " << reply->errorString();
+        requestsPending--;
     }
 
     reply->manager()->deleteLater();
+    if (!requestsPending)
+        emit requestsDone();
 }

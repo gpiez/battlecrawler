@@ -2,7 +2,7 @@
 #define ARMORY_H
 
 #include "guild.h"
-#include "player.h"
+#include "character.h"
 
 #include <QUrl>
 
@@ -15,14 +15,26 @@ class Armory: public QObject
 public:
     void request(QUrl);
     static void setui(MainWindow* ui);
+    static bool getRequestsPending();
+    static QVector<Character> characters;
+    static QHash<QString, int> characterNameIndex;
+    static QHash<QString, int> characterLongNameIndex;
+    static QVector<Guild> guilds;
+    static QHash<QString, int> guildNameIndex;
+    static QHash<QString, int> guildLongNameIndex;
+
+
+signals:
+    void requestsDone();
+
 protected:
     static qint64 requestsPending;
-    static qint64 currentRequest;
+//    static qint64 currentRequest;
 
-    static QDateTime quota1Time;
-    static qint64 quota1request;
-    static QDateTime quota2Time;
-    static qint64 quota2request;
+//    static QDateTime quota1Time;
+//    static qint64 quota1request;
+//    static QDateTime quota2Time;
+//    static qint64 quota2request;
 
     static MainWindow* ui;
 

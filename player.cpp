@@ -66,7 +66,7 @@ QDataStream &operator<<(QDataStream &out, const Player &g)
            g.zone <<
            g.realm <<
            g.faction <<
-           g.lastSeen;
+           g.lastModified;
     return out;
 }
 
@@ -77,6 +77,6 @@ QDataStream &operator>>(QDataStream &in, Player &g)
            g.zone >>
            g.realm >>
            g.faction >>
-           g.lastSeen;
+           g.lastModified;
     return in;
 }

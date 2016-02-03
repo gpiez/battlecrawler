@@ -3,8 +3,6 @@
 
 #include "armory.h"
 
-
-
 class ArmoryGuild : public Armory
 {
     Q_OBJECT
@@ -13,6 +11,10 @@ public:
     void processAnswer(QString);
     void processError(QString);
 
+    void updateGuilds();
+    static void insert(const Guild &g);
+    static void save();
+    static void load();
 };
 
 #endif // ARMORYGUILD_H

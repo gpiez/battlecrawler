@@ -19,7 +19,10 @@ SOURCES += main.cpp\
     player.cpp \
     guild.cpp \
     armoryguild.cpp \
-    armoryplayer.cpp
+    character.cpp \
+    armorycharacter.cpp \
+    bossindex.cpp \
+    achievementindex.cpp
 
 HEADERS  += mainwindow.h \
     censusdatabase.h \
@@ -27,6 +30,9 @@ HEADERS  += mainwindow.h \
     player.h \
     guild.h \
     armoryguild.h \
-    armoryplayer.h
+    character.h \
+    armorycharacter.h \
+    bossindex.h \
+    achievementindex.h
 
 FORMS    += mainwindow.ui

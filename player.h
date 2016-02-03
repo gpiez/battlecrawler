@@ -6,6 +6,9 @@
 #include <QUrl>
 #include <QVector>
 
+static constexpr int NFINGERPRINTS = 3;
+static constexpr int FINGERPRINTS[NFINGERPRINTS] = { 1111,2222,3333 };
+
 class Player
 {
 public:
@@ -15,16 +18,31 @@ public:
     QUrl armoryLink();
     void insert();
 
-    QString name;
-    QString zone;
-    QString realm;
-    QString guild;
-    QString race;
-    QString klass;
-    QString faction;
-    QString lastSeen;
-    int level;
+    int zone;
     bool toBeUpdated;
+
+    int lastModified;
+    QString name;
+    QString realm;
+    int klass;
+    int race;
+    int gender;
+    int level;
+    int achievementPoints;
+    int faction;
+
+    struct GuildHistory {
+        QString guild;
+        int joined;
+        int left;
+    };
+
+    int itemLevels[17];
+    int itemLevelMax;
+
+    int fingerprints[NFINGERPRINTS];
+
+    QVector<GuildHistory> guildHistory;
 
     static QVector<Player> players;
     static QHash<QString, int> playerNameIndex;

@@ -1,11 +1,11 @@
 #ifndef ACHIEVEMENTINDEX_H
 #define ACHIEVEMENTINDEX_H
 
+#include <QMap>
 
-class AchievementIndex
-{
-public:
+struct AchievementIndex: QMap<QString, int> {
     AchievementIndex();
 };
+extern const AchievementIndex achievementIndex;
 
 #endif // ACHIEVEMENTINDEX_H

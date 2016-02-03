@@ -1,13 +1,15 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef CHARACTER_H
+#define CHARACTER_H
+
+#include "bossindex.h"
 
 #include <QHash>
 #include <QString>
 #include <QUrl>
 #include <QVector>
 
-static constexpr int NFINGERPRINTS = 3;
-static constexpr int FINGERPRINTS[NFINGERPRINTS] = { 1111,2222,3333 };
+static constexpr int NFINGERPRINTS = 6;
+static constexpr int FINGERPRINTS[NFINGERPRINTS] = { 424, 430, 885, 1292, 3496, 4496 };
 
 class Character
 {
@@ -16,7 +18,6 @@ public:
     Character(QString name, QString realm);
 
     QUrl armoryLink();
-    void insert();
 
     int zone;
     bool toBeUpdated;
@@ -42,14 +43,12 @@ public:
 
     int fingerprints[NFINGERPRINTS];
 
+    QVector<int> achievements;
+    QVector<double> achievementsTimestamp;
+
     QVector<GuildHistory> guildHistory;
+    int boss[bossIndex.nBoss+1];                      //timestamp of last bosskill
 
-    static QVector<Character> players;
-    static QHash<QString, int> playerNameIndex;
-    static QHash<QString, int> playerLongNameIndex;
-
-    static void save();
-    static void load();
 };
 
 QDataStream &operator<<(QDataStream &, const Character &);

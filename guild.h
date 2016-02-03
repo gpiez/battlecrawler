@@ -21,14 +21,6 @@ public:
     QStringList members;
 
     bool toBeUpdated;
-
-    static QVector<Guild> guilds;
-    static QHash<QString, int> guildNameIndex;
-    static QHash<QString, int> guildLongNameIndex;
-
-    static void save();
-    static void load();
-    void insert();
 };
 
 QDataStream &operator<<(QDataStream &, const Guild &);

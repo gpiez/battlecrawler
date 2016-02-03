@@ -1,5 +1,6 @@
 #include "armoryguild.h"
 #include "censusdatabase.h"
+#include "mainwindow.h"
 
 #include <QDataStream>
 #include <QDebug>
@@ -16,18 +17,19 @@ void CensusDatabase::update(QString fileName)
     parseServers(s, p);
 }
 
-CensusDatabase::CensusDatabase(MainWindow* ui):
-    ui(ui)
+CensusDatabase::CensusDatabase(MainWindow* ui, ArmoryGuild* ag, ArmoryCharacter* ap):
+    ui(ui),
+    ag(ag),
+    ap(ap)
 {
     QSettings settings("piesoft","battlecrawler");
     apikey=settings.value("apikey").toString();
-    this->ui = ui;
     Armory::setui(ui);
 }
 
 int CensusDatabase::nPlayers()
 {
-    return Player::players.size();
+    return Armory::characters.size();
 }
 
 QString parseNext(QString s, int& start) {
@@ -75,13 +77,13 @@ Node CensusDatabase::parseServers(QString s, int& p) {
                 currentPlayer.realm = key.mid(key.indexOf('-')+1);
                 break;
             case 3:
-                currentPlayer.faction = key;
+//                currentPlayer.faction = key.toInt();
                 break;
             case 4:
-                currentPlayer.race = key;
+//                currentPlayer.race = key.toInt();
                 break;
             case 5:
-                currentPlayer.klass = key;
+//                currentPlayer.klass = key.toInt();
                 break;
             case 6:
                 currentPlayer.name = key;
@@ -95,7 +97,7 @@ Node CensusDatabase::parseServers(QString s, int& p) {
                 currentPlayer.level = node["0"].toInt();
 // ?? seen on server ??  currentPlayer.server = node["2"];
                 currentPlayer.toBeUpdated = true;
-                currentPlayer.insert();
+                ArmoryCharacter::insert(currentPlayer);
             } else
                 parseServers(s, p);
         } else {
@@ -110,28 +112,10 @@ Node CensusDatabase::parseServers(QString s, int& p) {
     return servers;
 }
 
-void CensusDatabase::createGuilds() {
-    for(const Player p: Player::players) {
-        QString g = p.guild;
-        if (g.isEmpty()) {
-            g = "noguild";
-        }
-        QString key = g + "-" + p.realm;
-        if (Guild::guildLongNameIndex.find(key) == Guild::guildLongNameIndex.end()) {
-            int i = Guild::guilds.size();
-            Guild::guildLongNameIndex[key] = i;
-            Guild::guildNameIndex[g] = i;
-            Guild::guilds.append(Guild());
-            Guild::guilds[i].name = g;
-            Guild::guilds[i].faction = p.faction;
-            Guild::guilds[i].realm = p.realm;
-        }
-//        Guild::guilds[i].members.append(p.name);
-    }
-}
-
 void CensusDatabase::updateGuilds() {
-    for (Guild g: Guild::guilds) {
+    if (ag->getRequestsPending()) return;
+
+    for (Guild g: Armory::guilds) {
         if (g.name == "noguild") continue;
         QString req("https://eu.api.battle.net/wow/guild/");
         req += g.realm;
@@ -139,14 +123,17 @@ void CensusDatabase::updateGuilds() {
         req += g.name;
         req += "?fields=members&locale=de_DE&apikey=";
         req += apikey;
-        ag.request(QUrl(req));
+        ag->request(QUrl(req));
     }
 }
 
 void CensusDatabase::updatePlayers() {
-    int i=0;
-    for (Player p: Player::players) {
-        i++;
+    if (ap->getRequestsPending()) return;
+
+    int max = Armory::characters.size();
+    for (int i=0; i<max; i++) {
+        Character p = Armory::characters[i];
+        ui->setProgress(i, max);
         if (i>100) break;
         QString req("https://eu.api.battle.net/wow/character/");
         req += p.realm;
@@ -154,12 +141,12 @@ void CensusDatabase::updatePlayers() {
         req += p.name;
         req += "?fields=guild+achievements+items+progression&locale=de_DE&apikey=";
         req += apikey;
-        ap.request(QUrl(req));
+        ap->request(QUrl(req));
     }
 }
 
 
 int CensusDatabase::nGuilds()
 {
-    return Guild::guilds.size();
+    return Armory::guilds.size();
 }

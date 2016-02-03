@@ -2,9 +2,9 @@
 #define CENSUSDATABASE_H
 
 #include "armoryguild.h"
-#include "armoryplayer.h"
+#include "armorycharacter.h"
 #include "guild.h"
-#include "player.h"
+#include "character.h"
 
 #include <QMap>
 #include <QString>
@@ -17,7 +17,7 @@ class MainWindow;
 class CensusDatabase
 {
 public:
-    CensusDatabase(MainWindow*);
+    CensusDatabase(MainWindow*, ArmoryGuild* ag, ArmoryCharacter* ap);
     void update(QString);
     bool nextPlayer(QString&);
     int nPlayers();
@@ -28,17 +28,17 @@ public:
     void saveGuilds();
     void updatePlayers();
 private:
-    ArmoryGuild ag;
-    ArmoryPlayer ap;
+    MainWindow* ui;
+    ArmoryGuild* ag;
+    ArmoryCharacter* ap;
     Node parse(QString s);
     Node parseServers(QString s, int &p);
 
-    Player currentPlayer;
+    Character currentPlayer;
     int level;
     QHash<QString, int> guildNameIndex;
     QHash<QString, int> guildLongNameIndex;
     QString apikey;
-    MainWindow* ui;
 };
 
 #endif // CENSUSDATABASE_H

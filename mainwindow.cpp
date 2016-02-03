@@ -1,9 +1,11 @@
 #include "censusdatabase.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "bossindex.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QProgressBar>
 #include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -11,15 +13,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    db = new CensusDatabase(this);
-    Player::load();
-    Guild::load();
+    progress = new QProgressBar();
+    progress->setFormat("%v/%m %p");
+    ui->statusBar->addPermanentWidget(progress);
+
+    QSettings settings("piesoft","battlecrawler");
+    apikey = settings.value("apikey").toString();
+
+    db = new CensusDatabase(this, &ag, &ap);
+    connect(&ag, SIGNAL(requestsDone()), this, SLOT(requestsDone()));
+    connect(&ap, SIGNAL(requestsDone()), this, SLOT(requestsDone()));
+    ArmoryCharacter::load();
+    ArmoryGuild::load();
 }
 
 MainWindow::~MainWindow()
 {
-    Guild::save();
-    Player::save();
+    ArmoryGuild::save();
+    ArmoryCharacter::save();
+//    bossIndex.save();
     delete ui;
 }
 
@@ -43,8 +55,18 @@ void MainWindow::addPlayerToTree(QString realm, QString guild, QString player)
 
 }
 
+void MainWindow::setProgress(int now, int end)
+{
+    progress->setMaximum(end);
+    progress->setValue(now);
+    if (now == end) {
+        progress->reset();
+    }
+}
+
 void MainWindow::on_pushButtonCensus_clicked()
 {
+    action = CENSUS;
     db->update("/mnt/d/World of Warcraft/WTF/Account/GPIEZ/SavedVariables/CensusPlus.lua");
     ui->labelCensus->setText(QString::number(db->nPlayers()));
     ui->labelGuilds->setText(QString::number(db->nGuilds()));
@@ -52,12 +74,66 @@ void MainWindow::on_pushButtonCensus_clicked()
 
 void MainWindow::on_pushButtonPlayers_clicked()
 {
+    action = PLAYERS;
     db->updatePlayers();
 
 }
 
 void MainWindow::on_pushButtonGuilds_clicked()
 {
+    action = GUILDS;
     db->updateGuilds();
 
+}
+
+void MainWindow::on_testAchieve_clicked()
+{
+    action = TESTACHIEVE;
+    ArmoryCharacter::insert(Character("Giganteus", "Thrall"));
+    ArmoryCharacter::insert(Character("Gigahuf", "Thrall"));
+    ArmoryCharacter::insert(Character("Sauerbruch", "Thrall"));
+    ArmoryCharacter::insert(Character("Giganteus", "Antonidas"));
+    db->updatePlayers();
+}
+
+void MainWindow::requestsDone()
+{
+    switch(action) {
+    case NIX:
+        break;
+    case CENSUS:
+        break;
+    case PLAYERS:
+        break;
+    case GUILDS:
+        break;
+    case TESTACHIEVE:
+        QMap<int,int> acount;
+        QMap<int,int> ts;
+        for(Character c: ArmoryCharacter::characters) {
+            qDebug() << c.achievements.size() << c.achievementsTimestamp.size() << c.name;
+            for (int i=0; i<c.achievements.size(); i++) {
+                int a = c.achievements[i];
+                if (i==0) qDebug() << a << c.achievementsTimestamp[i];
+                if (acount[a] > 0) {
+                    if (ts[a] == c.achievementsTimestamp[i])
+                        acount[a]++;
+                } else {
+                    acount[a] = 1;
+                    ts[a] = c.achievementsTimestamp[i];
+                }
+            }
+        }
+        for(int a: acount.keys()) {
+            if (acount[a] == 4) {
+                qDebug() << a;
+            }
+        }
+        break;
+    }
+}
+
+QString MainWindow::getApikey() const
+{
+    return apikey;
 }
