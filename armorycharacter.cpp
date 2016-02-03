@@ -70,7 +70,7 @@ void ArmoryCharacter::updateCharacters() {
         req += "/";
         req += p.name;
         req += "?fields=guild+achievements+items+progression&locale=de_DE&apikey=";
-        req += ui->getApikey();
+        req += apikey;
         request(QUrl(req));
     }
 }

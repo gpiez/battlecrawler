@@ -38,7 +38,6 @@ private:
     int level;
     QHash<QString, int> guildNameIndex;
     QHash<QString, int> guildLongNameIndex;
-    QString apikey;
 };
 
 #endif // CENSUSDATABASE_H

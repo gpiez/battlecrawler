@@ -14,7 +14,7 @@ class Armory: public QObject
     Q_OBJECT
 public:
     void request(QUrl);
-    static void setui(MainWindow* ui);
+    static void init(MainWindow* ui, QString apikey);
     static bool getRequestsPending();
     static QVector<Character> characters;
     static QHash<QString, int> characterNameIndex;
@@ -22,7 +22,7 @@ public:
     static QVector<Guild> guilds;
     static QHash<QString, int> guildNameIndex;
     static QHash<QString, int> guildLongNameIndex;
-
+    static QString apikey;
 
 signals:
     void requestsDone();

@@ -22,9 +22,6 @@ CensusDatabase::CensusDatabase(MainWindow* ui, ArmoryGuild* ag, ArmoryCharacter*
     ag(ag),
     ap(ap)
 {
-    QSettings settings("piesoft","battlecrawler");
-    apikey=settings.value("apikey").toString();
-    Armory::setui(ui);
 }
 
 int CensusDatabase::nPlayers()
@@ -122,7 +119,7 @@ void CensusDatabase::updateGuilds() {
         req += "/";
         req += g.name;
         req += "?fields=members&locale=de_DE&apikey=";
-        req += apikey;
+        req += Armory::apikey;
         ag->request(QUrl(req));
     }
 }
@@ -140,7 +137,7 @@ void CensusDatabase::updatePlayers() {
         req += "/";
         req += p.name;
         req += "?fields=guild+achievements+items+progression&locale=de_DE&apikey=";
-        req += apikey;
+        req += Armory::apikey;
         ap->request(QUrl(req));
     }
 }

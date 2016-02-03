@@ -26,7 +26,6 @@ public:
     ~MainWindow();
     void addPlayerToTree(QString realm, QString guild, QString player);
     void setProgress(int now, int end);
-    QString getApikey() const;
 
 private slots:
     void on_pushButtonCensus_clicked();
@@ -48,8 +47,6 @@ private:
     QHash<QString, QTreeWidgetItem*> realmTree;
     QHash<QString, QHash<QString, QTreeWidgetItem*> > guildTree;
     Actions action;
-    QString apikey;
-
 };
 
 #endif // MAINWINDOW_H

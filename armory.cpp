@@ -16,6 +16,7 @@ QHash<QString, int> Armory::characterLongNameIndex;
 QVector<Guild> Armory::guilds;
 QHash<QString, int> Armory::guildNameIndex;
 QHash<QString, int> Armory::guildLongNameIndex;
+QString Armory::apikey;
 
 void Armory::request(QUrl url){
     requestsPending++;
@@ -32,9 +33,10 @@ void Armory::request(QUrl url){
     loop.exec();
 }
 
-void Armory::setui(MainWindow *ui)
+void Armory::init(MainWindow *ui, QString apikey)
 {
-    Armory::ui = ui;
+    Armory::ui = ui,
+    Armory::apikey = apikey;
 }
 
 bool Armory::getRequestsPending()

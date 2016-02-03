@@ -18,8 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->addPermanentWidget(progress);
 
     QSettings settings("piesoft","battlecrawler");
-    apikey = settings.value("apikey").toString();
+    QString apikey = settings.value("apikey").toString();
 
+    Armory::init(this, apikey);
     db = new CensusDatabase(this, &ag, &ap);
     connect(&ag, SIGNAL(requestsDone()), this, SLOT(requestsDone()));
     connect(&ap, SIGNAL(requestsDone()), this, SLOT(requestsDone()));
@@ -131,9 +132,4 @@ void MainWindow::requestsDone()
         }
         break;
     }
-}
-
-QString MainWindow::getApikey() const
-{
-    return apikey;
 }

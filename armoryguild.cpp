@@ -64,7 +64,7 @@ void ArmoryGuild::updateGuilds() {
         req += "/";
         req += g.name;
         req += "?fields=members&locale=de_DE&apikey=";
-        req += ui->getApikey();
+        req += apikey;
         request(QUrl(req));
     }
 }
