@@ -3,6 +3,7 @@
 
 #include "guild.h"
 #include "character.h"
+#include "player.h"
 
 #include <QUrl>
 
@@ -23,6 +24,9 @@ public:
     static QHash<QString, int> guildNameIndex;
     static QHash<QString, int> guildLongNameIndex;
     static QString apikey;
+    static QVector<Player> players;
+    static QHash<QString, int> playerNameIndex;
+    static QHash<QString, int> playerLongNameIndex;
 
 signals:
     void requestsDone();

@@ -3,53 +3,19 @@
 
 #include <QHash>
 #include <QString>
-#include <QUrl>
 #include <QVector>
-
-static constexpr int NFINGERPRINTS = 3;
-static constexpr int FINGERPRINTS[NFINGERPRINTS] = { 1111,2222,3333 };
+#include "character.h"
 
 class Player
 {
 public:
     Player();
-    Player(QString name, QString realm);
+    Player(QString id);
 
-    QUrl armoryLink();
-    void insert();
-
-    int zone;
-    bool toBeUpdated;
-
-    int lastModified;
-    QString name;
-    QString realm;
-    int klass;
-    int race;
-    int gender;
-    int level;
-    int achievementPoints;
-    int faction;
-
-    struct GuildHistory {
-        QString guild;
-        int joined;
-        int left;
-    };
-
-    int itemLevels[17];
-    int itemLevelMax;
+    QString id;
+    QVector<QString> characterIDs;
 
     int fingerprints[NFINGERPRINTS];
-
-    QVector<GuildHistory> guildHistory;
-
-    static QVector<Player> players;
-    static QHash<QString, int> playerNameIndex;
-    static QHash<QString, int> playerLongNameIndex;
-
-    static void save();
-    static void load();
 };
 
 QDataStream &operator<<(QDataStream &, const Player &);

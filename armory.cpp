@@ -17,6 +17,9 @@ QVector<Guild> Armory::guilds;
 QHash<QString, int> Armory::guildNameIndex;
 QHash<QString, int> Armory::guildLongNameIndex;
 QString Armory::apikey;
+QVector<Player> Armory::players;
+QHash<QString, int> Armory::playerNameIndex;
+QHash<QString, int> Armory::playerLongNameIndex;
 
 void Armory::request(QUrl url){
     requestsPending++;
