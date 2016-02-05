@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "bossindex.h"
+#include "achievementindex.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -21,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QString apikey = settings.value("apikey").toString();
 
     Armory::init(this, apikey);
+    ai.init();
     db = new CensusDatabase(this, &ag, &ap);
     connect(&ag, SIGNAL(requestsDone()), this, SLOT(requestsDone()));
     connect(&ap, SIGNAL(requestsDone()), this, SLOT(requestsDone()));
@@ -127,7 +129,7 @@ void MainWindow::requestsDone()
         }
         for(int a: acount.keys()) {
             if (acount[a] == 4) {
-                qDebug() << a;
+                qDebug() << Armory::achievementIndex[a];
             }
         }
         break;

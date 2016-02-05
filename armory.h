@@ -27,6 +27,7 @@ public:
     static QVector<Player> players;
     static QHash<QString, int> playerNameIndex;
     static QHash<QString, int> playerLongNameIndex;
+    static QMap<int, QString> achievementIndex;
 
 signals:
     void requestsDone();

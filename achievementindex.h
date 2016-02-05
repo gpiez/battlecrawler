@@ -2,9 +2,18 @@
 #define ACHIEVEMENTINDEX_H
 
 #include <QMap>
+#include "armory.h"
 
-struct AchievementIndex: QMap<QString, int> {
-    AchievementIndex();
+struct AchievementIndex: Armory
+{
+    Q_OBJECT
+public:
+    void init();
+
+private:
+    void processAnswer(QString) override;
+    void processError(QString) override;
+
 };
 extern const AchievementIndex achievementIndex;
 

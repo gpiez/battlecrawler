@@ -20,6 +20,7 @@ QString Armory::apikey;
 QVector<Player> Armory::players;
 QHash<QString, int> Armory::playerNameIndex;
 QHash<QString, int> Armory::playerLongNameIndex;
+QMap<int, QString> Armory::achievementIndex;
 
 void Armory::request(QUrl url){
     requestsPending++;

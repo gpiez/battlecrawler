@@ -8,8 +8,8 @@ class ArmoryGuild : public Armory
     Q_OBJECT
 public:
     ArmoryGuild();
-    void processAnswer(QString);
-    void processError(QString);
+    void processAnswer(QString) override;
+    void processError(QString) override;
 
     void updateGuilds();
     static void insert(const Guild &g);

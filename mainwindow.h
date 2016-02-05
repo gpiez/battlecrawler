@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTreeWidget>
 
+#include "achievementindex.h"
 #include "armorycharacter.h"
 #include "armoryguild.h"
 
@@ -42,6 +43,7 @@ private:
     CensusDatabase* db;
     ArmoryGuild ag;
     ArmoryCharacter ap;
+    AchievementIndex ai;
     QProgressBar *progress;
     QHash<QString, QHash<QString, QHash<QString, QTreeWidgetItem*> > > playerTree;
     QHash<QString, QTreeWidgetItem*> realmTree;
